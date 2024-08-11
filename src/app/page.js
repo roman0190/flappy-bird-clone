@@ -39,20 +39,18 @@ export default function FlappyBird() {
   }, [birdPosition]);
 
   useEffect(() => {
-    if (pipeLeft >= -pipeWidth) {
+    if (pipeLeft >= -pipeWidth && !isGameOver) {
       const interval = setInterval(() => {
         setPipeLeft(pipeLeft - pipeSpeed);
       }, 24);
       return () => clearInterval(interval);
-    } else {
+    } else if (!isGameOver) {
       setPipeLeft(gameWidth);
       setPipeHeight(Math.floor(Math.random() * (gameHeight - pipeGap)));
       setScore(score + 1);
-      if (!isGameOver) {
-        scoreAudioRef.current.play(); // Play score sound when pipe resets
-      }
+      scoreAudioRef.current.play(); // Play score sound when pipe resets
     }
-  }, [pipeLeft]);
+  }, [pipeLeft, isGameOver]);
 
   useEffect(() => {
     const hasCollidedWithPipe =
@@ -174,23 +172,26 @@ export default function FlappyBird() {
       </div>
       {isGameOver && (
         <div
-        className="absolute flex text-xs"
-        style={{
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "100%",
-          height: "96px", // Fixed height for game over screen
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
-          color: "white",
-          textAlign: "center",
-          lineHeight: "96px", // Center text vertically
-          cursor: "pointer",
-        }}
-        onClick={resetGame}
+          className="absolute flex text-xs"
+          style={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "100%",
+            height: "120px", // Increased height for game over screen
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            color: "white",
+            textAlign: "center",
+            lineHeight: "120px", // Center text vertically
+            cursor: "pointer",
+          }}
+          onClick={resetGame}
         >
-        <img src="/assets/images/modi.png" alt="Modi" />
-          <span className='font-extrabold'>হাসিনার খেলা শেষ! আবার চেষ্টা করুন<span className='bg-cyan-500 text-red-600'>{" CLICK HERE"}</span></span>
+          <img src="/assets/images/modi.png" alt="Modi" className="h-full" />
+          <span className="ml-4 font-extrabold">
+            হাসিনার খেলা শেষ! স্কোর: {score} আবার চেষ্টা করুন{" "}
+            <span className="bg-cyan-500 text-red-600">CLICK HERE</span>
+          </span>
         </div>
       )}
     </div>
